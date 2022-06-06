@@ -1,5 +1,9 @@
 package polic72.dimbag;
 
+import org.slf4j.Logger;
+
+import com.mojang.logging.LogUtils;
+
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -14,6 +18,12 @@ import polic72.dimbag.core.ModItems;
 @Mod(Reference.MOD_ID)
 public class DimensionalBag
 {
+	/**
+	 * The logger of the mod.
+	 */
+	public static final Logger LOGGER = LogUtils.getLogger();
+	
+	
 	/**
 	 * The creative tab instance to use in the mod.
 	 */
