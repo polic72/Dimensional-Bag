@@ -1,9 +1,10 @@
 package polic72.dimbag.inventory;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -15,11 +16,13 @@ import net.minecraftforge.items.ItemStackHandler;
  * 
  * @author polic72
  */
-public class BagCapabilityProvider implements ICapabilityProvider
+public class BagCapabilityProvider implements ICapabilitySerializable<CompoundTag>
 {
-	private final ItemStack stack;
+	//private final ItemStack stack;
 	
-	private LazyOptional<IItemHandler> optional = LazyOptional.empty();
+	private ItemStackHandler stackHandler;
+	
+	private final LazyOptional<IItemHandler> optional = LazyOptional.of(() -> stackHandler);
 	
 	
 	/**
@@ -27,9 +30,11 @@ public class BagCapabilityProvider implements ICapabilityProvider
 	 * 
 	 * @param stack The {@link ItemStack} to link to this capability.
 	 */
-	public BagCapabilityProvider(ItemStack stack)
+	public BagCapabilityProvider(/*ItemStack stack*/)
 	{
-		this.stack = stack;
+		//this.stack = stack;
+		
+		stackHandler = new ItemStackHandler(27);
 	}
 	
 	
@@ -38,8 +43,6 @@ public class BagCapabilityProvider implements ICapabilityProvider
 	{
 		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-//			cap.orEmpty(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, optional);
-			
 			//ItemStackHandler
 			
 			//ItemStack
@@ -47,8 +50,22 @@ public class BagCapabilityProvider implements ICapabilityProvider
 			return optional.cast();
 		}
 		
-		return LazyOptional.empty();
+		//return LazyOptional.empty();
 		
-//		return cap.orEmpty(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, op);
+		return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(cap, optional);
+	}
+
+
+	@Override
+	public CompoundTag serializeNBT()
+	{
+		return stackHandler.serializeNBT();
+	}
+
+
+	@Override
+	public void deserializeNBT(CompoundTag nbt)
+	{
+		stackHandler.deserializeNBT(nbt);
 	}
 }

@@ -1,5 +1,7 @@
 package polic72.dimbag.items;
 
+import java.util.UUID;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -8,8 +10,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import polic72.dimbag.DimensionalBag;
+import polic72.dimbag.inventory.BagCapabilityProvider;
 
 
 /**
@@ -19,6 +26,12 @@ import polic72.dimbag.DimensionalBag;
  */
 public class BagItem extends Item
 {
+	/**
+	 * The name of the NBT tag for telling different Bags.
+	 */
+	public static final String ID_TAG = "ID";
+	
+	
 	public BagItem(Properties properties)
 	{
 		super(properties);
@@ -28,14 +41,30 @@ public class BagItem extends Item
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
 	{
-		return super.initCapabilities(stack, nbt);
+//		CompoundTag tag = stack.getTag();
+//		
+//		if (tag == null)
+//		{
+//			tag = new CompoundTag();
+//		}
+		
+		
+//		nbt.putUUID(ID_TAG, UUID.randomUUID());
+		
+		
+		return new BagCapabilityProvider();
 	}
 	
 	
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand)
 	{
-		DimensionalBag.LOGGER.info("Bag used!");
+//		DimensionalBag.LOGGER.info("Bag used!");
+		
+		LazyOptional<IItemHandler> optional = player.getItemInHand(interactionHand)
+				.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+		
+		DimensionalBag.LOGGER.info(Integer.toString(optional.resolve().get().getSlots()));
 		
 		//
 		
