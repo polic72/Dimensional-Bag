@@ -2,6 +2,7 @@ package polic72.dimbag.items;
 
 import java.util.UUID;
 
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -15,6 +16,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.network.NetworkHooks;
 import polic72.dimbag.DimensionalBag;
 import polic72.dimbag.inventory.BagCapabilityProvider;
 
@@ -66,7 +68,8 @@ public class BagItem extends Item
 		
 		DimensionalBag.LOGGER.info(Integer.toString(optional.resolve().get().getSlots()));
 		
-		//
+		//NetworkHooks.openGui(null, null);
+//		MenuScreens.
 		
 		return super.use(level, player, interactionHand);
 	}
