@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.CraftingTableBlock;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -49,10 +50,8 @@ public class BagItem extends Item
 //		{
 //			tag = new CompoundTag();
 //		}
-		
-		
+	
 //		nbt.putUUID(ID_TAG, UUID.randomUUID());
-		
 		
 		return new BagCapabilityProvider();
 	}
@@ -61,15 +60,21 @@ public class BagItem extends Item
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand)
 	{
-//		DimensionalBag.LOGGER.info("Bag used!");
+		if (!level.isClientSide)
+		{
+//			DimensionalBag.LOGGER.info("Bag used!");
+			
+			LazyOptional<IItemHandler> optional = player.getItemInHand(interactionHand)
+					.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+			
+			DimensionalBag.LOGGER.info(Integer.toString(optional.resolve().get().getSlots()));
+			
+			// NetworkHooks.openGui(null, null);
+//			MenuScreens.
+			
+			// CraftingTableBlock
+		}
 		
-		LazyOptional<IItemHandler> optional = player.getItemInHand(interactionHand)
-				.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-		
-		DimensionalBag.LOGGER.info(Integer.toString(optional.resolve().get().getSlots()));
-		
-		//NetworkHooks.openGui(null, null);
-//		MenuScreens.
 		
 		return super.use(level, player, interactionHand);
 	}
