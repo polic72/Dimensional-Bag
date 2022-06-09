@@ -4,9 +4,14 @@ import java.util.UUID;
 
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -69,7 +74,23 @@ public class BagItem extends Item
 			
 			DimensionalBag.LOGGER.info(Integer.toString(optional.resolve().get().getSlots()));
 			
-			// NetworkHooks.openGui(null, null);
+			NetworkHooks.openGui((ServerPlayer)player, new MenuProvider()
+			{
+				@Override
+				public AbstractContainerMenu createMenu(int windowID, Inventory playerInventory, Player player)
+				{
+					// TODO Auto-generated method stub
+					return null;
+				}
+				
+				
+				@Override
+				public Component getDisplayName()
+				{
+					// TODO Auto-generated method stub
+					return null;
+				}
+			});
 //			MenuScreens.
 			
 			// CraftingTableBlock
