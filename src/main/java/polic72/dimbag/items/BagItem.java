@@ -5,6 +5,7 @@ import java.util.UUID;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -38,6 +39,12 @@ public class BagItem extends Item
 	 * The name of the NBT tag for telling different Bags.
 	 */
 	public static final String ID_TAG = "ID";
+	
+	
+	/**
+	 * The display name of the screen of all dimensional bags.
+	 */
+	public static final String SCREEN_BAG = "screen.dimbag.bag";
 	
 	
 	public BagItem(Properties properties)
@@ -87,8 +94,7 @@ public class BagItem extends Item
 				@Override
 				public Component getDisplayName()
 				{
-					// TODO Auto-generated method stub
-					return null;
+					return new TranslatableComponent(SCREEN_BAG);
 				}
 			});
 //			MenuScreens.
