@@ -24,6 +24,6 @@ public class ModContainers
 	
 	
 	public static final RegistryObject<MenuType<BagContainer>> BAG_CONTAINER = REGISTER.register("bag",
-			() -> IForgeMenuType.create());
+			() -> IForgeMenuType.create((windowId, inv, data) -> new BagContainer(windowId, inv, data.readItem())));
 	// Make a Supplier for the BagContainer here.
 }
