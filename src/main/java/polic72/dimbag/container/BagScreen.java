@@ -45,7 +45,7 @@ public class BagScreen extends AbstractContainerScreen<BagContainer>
 	{
 		super.renderLabels(matrixStack, x, y);
 		
-		font.draw(matrixStack, title, y, x, 0x404040);
+		//font.draw(matrixStack, title, x, y, 0x404040);
 	}
 	
 	

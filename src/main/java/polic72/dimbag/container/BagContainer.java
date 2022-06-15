@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -14,6 +15,8 @@ import polic72.dimbag.core.ModContainers;
 public class BagContainer extends AbstractContainerMenu
 {
 	private ItemStack itemStack;
+	private IItemHandler itemInventory;
+	
 	private Player player;
 	private IItemHandler playerInventory;
 	
@@ -23,11 +26,15 @@ public class BagContainer extends AbstractContainerMenu
 		super(ModContainers.BAG_CONTAINER.get(), windowID);
 		
 		this.itemStack = itemStack;
+		itemInventory = itemStack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve().get();
+		
 		player = inventory.player;
 		playerInventory = new InvWrapper(inventory);
 		
 		
-		layoutPlayerInventorySlots(10, 70);
+		addSlotGrid(itemInventory, 0, 8, 18, 9, 18, 3, 18);
+		
+		layoutPlayerInventorySlots(8, 84);
 	}
 	
 	

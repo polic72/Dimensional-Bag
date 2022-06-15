@@ -1,31 +1,22 @@
 package polic72.dimbag.items;
 
-import java.util.UUID;
-
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.CraftingTableBlock;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkHooks;
-import polic72.dimbag.DimensionalBag;
+import polic72.dimbag.container.BagContainer;
 import polic72.dimbag.inventory.BagCapabilityProvider;
 
 
@@ -75,36 +66,63 @@ public class BagItem extends Item
 	{
 		if (!level.isClientSide)
 		{
-//			DimensionalBag.LOGGER.info("Bag used!");
+			ItemStack workingItemStack = getWorkingItemStack(player);
 			
-			LazyOptional<IItemHandler> optional = player.getItemInHand(interactionHand)
-					.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-			
-			DimensionalBag.LOGGER.info(Integer.toString(optional.resolve().get().getSlots()));
-			
-			
-			NetworkHooks.openGui((ServerPlayer)player, new MenuProvider()
+			MenuProvider containerProvider = new MenuProvider()
 			{
 				@Override
 				public AbstractContainerMenu createMenu(int windowID, Inventory playerInventory, Player player)
 				{
-					// TODO Auto-generated method stub
-					return null;
+					return new BagContainer(windowID, playerInventory, workingItemStack);
 				}
 				
 				
 				@Override
 				public Component getDisplayName()
-				{
+				{	
 					return new TranslatableComponent(SCREEN_BAG);
 				}
-			});
-//			MenuScreens.
+			};
 			
-			// CraftingTableBlock
+			NetworkHooks.openGui((ServerPlayer)player, containerProvider, 
+					(FriendlyByteBuf t) -> t.writeItem(workingItemStack));
 		}
 		
 		
 		return super.use(level, player, interactionHand);
+	}
+	
+	
+	/**
+	 * Gets the {@link ItemStack} that should be worked with. Needed thanks to dual-wielding.
+	 * <p/>
+	 * Tries to use the main hand first.
+	 * 
+	 * @param player The player to get the working ItemStack from.
+	 * @return The {@link ItemStack} to work with. Always null on the client side.
+	 */
+	protected ItemStack getWorkingItemStack(Player player)
+	{
+		if (!player.level.isClientSide)
+		{
+			ItemStack itemStack = player.getMainHandItem();
+			Item item = itemStack.getItem();
+			
+			if (item != null && item instanceof BagItem)
+			{
+				return itemStack;
+			}
+			
+			
+			itemStack = player.getOffhandItem();
+			item = itemStack.getItem();
+			
+			if (item != null && item instanceof BagItem)
+			{
+				return itemStack;
+			}
+		}
+		
+		return null;
 	}
 }

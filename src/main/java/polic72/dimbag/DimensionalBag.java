@@ -4,9 +4,14 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import polic72.dimbag.container.BagScreen;
 import polic72.dimbag.core.ModContainers;
 import polic72.dimbag.core.ModItems;
 
@@ -37,5 +42,15 @@ public class DimensionalBag
 		
 		ModItems.REGISTER.register(eventBus);
 		ModContainers.REGISTER.register(eventBus);
+		
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(DimensionalBag::clientInit));
+	}
+	
+	
+	public static void clientInit(FMLClientSetupEvent event)
+	{
+		event.enqueueWork(() ->
+			MenuScreens.register(ModContainers.BAG_CONTAINER.get(), BagScreen::new)
+			);
 	}
 }
