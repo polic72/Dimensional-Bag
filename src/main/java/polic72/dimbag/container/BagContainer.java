@@ -4,12 +4,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import polic72.dimbag.core.ModContainers;
+import polic72.dimbag.items.BagItem;
 
 
 public class BagContainer extends AbstractContainerMenu
@@ -43,6 +45,23 @@ public class BagContainer extends AbstractContainerMenu
 	{
 		return true;
 	}
+	
+	
+//	@Override
+//	public boolean canTakeItemForPickAll(ItemStack itemStack, Slot slot)
+//	{
+//		return !(itemStack.getItem() instanceof BagItem);
+//	}
+//	
+//	
+//	@Override
+//	public boolean canDragTo(Slot slot)
+//	{
+//		if (slot.)
+//		
+//		// TODO Auto-generated method stub
+//		return super.canDragTo(slot);
+//	}
 	
 	
 	/**
