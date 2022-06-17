@@ -1,14 +1,13 @@
 package polic72.dimbag.container;
 
-import net.minecraft.nbt.CompoundTag;
+import java.util.UUID;
+
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import polic72.dimbag.core.ModContainers;
 import polic72.dimbag.items.BagItem;
@@ -16,10 +15,11 @@ import polic72.dimbag.items.BagItem;
 
 public class BagContainer extends AbstractContainerMenu
 {
-	private ItemStack itemStack;
+//	private ItemStack itemStack;
 	private IItemHandler itemInventory;
+	private UUID bagID;
 	
-	private Player player;
+//	private Player player;
 	private IItemHandler playerInventory;
 	
 	
@@ -27,10 +27,11 @@ public class BagContainer extends AbstractContainerMenu
 	{
 		super(ModContainers.BAG_CONTAINER.get(), windowID);
 		
-		this.itemStack = itemStack;
+//		this.itemStack = itemStack;
 		itemInventory = itemStack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve().get();
+		bagID = itemStack.getTag().getUUID(BagItem.ID_TAG);
 		
-		player = inventory.player;
+//		player = inventory.player;
 		playerInventory = new InvWrapper(inventory);
 		
 		
@@ -45,23 +46,6 @@ public class BagContainer extends AbstractContainerMenu
 	{
 		return true;
 	}
-	
-	
-//	@Override
-//	public boolean canTakeItemForPickAll(ItemStack itemStack, Slot slot)
-//	{
-//		return !(itemStack.getItem() instanceof BagItem);
-//	}
-//	
-//	
-//	@Override
-//	public boolean canDragTo(Slot slot)
-//	{
-//		if (slot.)
-//		
-//		// TODO Auto-generated method stub
-//		return super.canDragTo(slot);
-//	}
 	
 	
 	/**
@@ -79,7 +63,7 @@ public class BagContainer extends AbstractContainerMenu
 	{
 		for (int i = 0; i < count; i++)
 		{
-			addSlot(new SlotItemHandler(handler, index, x, y));
+			addSlot(new BagSlot(handler, index, x, y, bagID));
 			
 			x += dx;
 			index++;

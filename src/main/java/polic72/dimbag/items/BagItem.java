@@ -1,5 +1,7 @@
 package polic72.dimbag.items;
 
+import java.util.UUID;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -67,6 +69,22 @@ public class BagItem extends Item
 		if (!level.isClientSide)
 		{
 			ItemStack workingItemStack = getWorkingItemStack(player);
+//			CompoundTag nbt = workingItemStack.serializeNBT();
+			CompoundTag nbt = workingItemStack.getTag();
+			
+			if (nbt == null)
+			{
+				nbt = new CompoundTag();
+			}
+			
+			if (!nbt.hasUUID(ID_TAG))
+			{
+				nbt.putUUID(ID_TAG, UUID.randomUUID());
+				
+//				workingItemStack.deserializeNBT(nbt);
+				workingItemStack.setTag(nbt);
+			}
+			
 			
 			MenuProvider containerProvider = new MenuProvider()
 			{
