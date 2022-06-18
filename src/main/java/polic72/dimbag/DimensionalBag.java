@@ -13,6 +13,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import polic72.dimbag.container.BagScreen;
 import polic72.dimbag.core.ModContainers;
+import polic72.dimbag.core.ModEntities;
 import polic72.dimbag.core.ModItems;
 
 
@@ -42,6 +43,7 @@ public class DimensionalBag
 		
 		ModItems.REGISTER.register(eventBus);
 		ModContainers.REGISTER.register(eventBus);
+		ModEntities.REGISTER.register(eventBus);
 		
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(DimensionalBag::clientInit));
 	}
