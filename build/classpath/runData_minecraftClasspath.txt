@@ -1,4 +1,4 @@
-/home/stonisg/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.18.2-40.1.25_mapped_official_1.18.2/forge-1.18.2-40.1.25_mapped_official_1.18.2-recomp.jar
+/home/stonisg/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.18.2-40.1.25_mapped_parchment_2022.06.05-1.18.2/forge-1.18.2-40.1.25_mapped_parchment_2022.06.05-1.18.2-recomp.jar
 /home/stonisg/.gradle/caches/forge_gradle/minecraft_repo/versions/1.18.2/client-extra.jar
 /home/stonisg/.gradle/caches/modules-2/files-2.1/net.minecraftforge/javafmllanguage/1.18.2-40.1.25/77823c9b7d149b2bc002f19f24b07226288ba28f/javafmllanguage-1.18.2-40.1.25.jar
 /home/stonisg/.gradle/caches/modules-2/files-2.1/net.minecraftforge/mclanguage/1.18.2-40.1.25/20abed3d9dd71d7bb626e890342df607b2766994/mclanguage-1.18.2-40.1.25.jar
@@ -9,7 +9,7 @@
 /home/stonisg/.gradle/caches/modules-2/files-2.1/ca.weblite/java-objc-bridge/1.0.0/6ef160c3133a78de015830860197602ca1c855d3/java-objc-bridge-1.0.0.jar
 /home/stonisg/.gradle/caches/modules-2/files-2.1/net.minecraftforge/mergetool/1.1.3/d7d4b6eac7f49c59255c8ac25190802c29ac9a4a/mergetool-1.1.3-api.jar
 /home/stonisg/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/23.0.0/8cc20c07506ec18e0834947b84a864bfc094484e/annotations-23.0.0.jar
-/home/stonisg/.gradle/caches/forge_gradle/mcp_repo/net/minecraft/mapping/1.18.2/mapping-1.18.2-mapping.zip
+/home/stonisg/.gradle/caches/parchmentgradle/org/parchmentmc/data/parchment-1.18.2/2022.06.05/parchment-1.18.2-2022.06.05.zip
 /home/stonisg/.gradle/caches/modules-2/files-2.1/net.minecraftforge/accesstransformers/8.0.4/272d240aa73f42195b2a68e2ebd8b701ecf41f63/accesstransformers-8.0.4.jar
 /home/stonisg/.gradle/caches/modules-2/files-2.1/net.minecraftforge/coremods/5.0.2/ca04eeee6c3764c151b2a2efa675057a7531acc4/coremods-5.0.2.jar
 /home/stonisg/.gradle/caches/modules-2/files-2.1/net.minecraftforge/forgespi/4.0.11/beba03c49f418c8d66aae30a6df69bde4fce2f18/forgespi-4.0.11.jar

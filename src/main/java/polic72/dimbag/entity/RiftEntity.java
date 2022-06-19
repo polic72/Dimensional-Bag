@@ -83,6 +83,28 @@ public class RiftEntity extends Entity
 	}
 	
 	
+	/**
+	 * Gets the width of the Rift in pixels.
+	 * 
+	 * @return The width of the Rift in pixels.
+	 */
+	public int getWidthPixels()
+	{
+		return 16;
+	}
+	
+	
+	/**
+	 * Gets the height of the Rift in pixels.
+	 * 
+	 * @return The height of the Rift in pixels.
+	 */
+	public int getHeightPixels()
+	{
+		return 32;
+	}
+	
+	
 	@Override
 	protected void defineSynchedData()
 	{
