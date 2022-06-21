@@ -1,25 +1,18 @@
 package polic72.dimbag.entity.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import polic72.dimbag.Reference;
-import polic72.dimbag.core.ModEntities;
 import polic72.dimbag.entity.RiftEntity;
 
 
@@ -37,14 +30,15 @@ public class RiftRenderer extends EntityRenderer<RiftEntity>
 		"textures/entity/rift.png");
 	
 	
-	protected EntityRenderDispatcher dispatcher;
+	/**
+	 * The render type for the rift.
+	 */
+	private static final RenderType RENDER_TYPE = RenderType.entityCutout(RIFT_TEXTURE);
 	
 	
 	public RiftRenderer(Context context)
 	{
 		super(context);
-		
-		dispatcher = context.getEntityRenderDispatcher();
 	}
 	
 	
@@ -60,73 +54,51 @@ public class RiftRenderer extends EntityRenderer<RiftEntity>
 			MultiBufferSource buffer, int packedLight)
 	{
 		matrixStack.pushPose();
-		matrixStack.mulPose(Vector3f.YP.rotation(180F - entityYaw));
 		
-		float scale = 0.0625F;
+		float scale = 1F;
 		matrixStack.scale(scale, scale, scale);
 		
-		matrixStack.mulPose(dispatcher.cameraOrientation());
+		matrixStack.translate(0, rift.getBbHeight() - 1.0F, 0);
 		
-		VertexConsumer vertexConsumer = buffer.getBuffer(RenderType..entityCutout(RIFT_TEXTURE));
+		matrixStack.mulPose(entityRenderDispatcher.cameraOrientation());
 		
-		renderRift(rift, vertexConsumer, rift.getWidthPixels(), rift.getHeightPixels(), 0, 0);
+		matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+		
+		PoseStack.Pose poseStack_pose = matrixStack.last();
+        Matrix4f matrix4f = poseStack_pose.pose();
+        Matrix3f matrix3f = poseStack_pose.normal();
+        
+        VertexConsumer vertexConsumer = buffer.getBuffer(RENDER_TYPE);
+        
+        vertex(vertexConsumer, matrix4f, matrix3f, packedLight, 0.0F, 0.0F, 0, 1);
+        vertex(vertexConsumer, matrix4f, matrix3f, packedLight, 1.0F, 0.0F, 1, 1);
+        vertex(vertexConsumer, matrix4f, matrix3f, packedLight, 1.0F, 1.0F, 1, 0);
+        vertex(vertexConsumer, matrix4f, matrix3f, packedLight, 0.0F, 1.0F, 0, 0);
 		
 		matrixStack.popPose();
-		
-		matrixStack.
 		
 		
 		super.render(rift, entityYaw, partialTicks, matrixStack, buffer, packedLight);
 	}
 	
 	
-	private void renderRift(RiftEntity rift, VertexConsumer consumer, int width, int height, int textureU, int textureV)
-    {
-        float negHalfWidth = (float)(-width) / 2.0F;
-        float negHalfHeight = (float)(-height) / 2.0F;
-        
-        float textureWidth = 16.0F;
-        float textureHeight = 32.0F;
-
-        for (int i = 0; i < width / 16; ++i)	//i = blocks in width
-        {
-            for (int q = 0; q < height / 16; ++q)	//q = blocks in height
-            {
-                float blockCenter_width = negHalfWidth + (float)((i + 1) * 16);
-                float blockCenter_width_0 = negHalfWidth + (float)(i * 16);
-                
-                float blockCenter_height = negHalfHeight + (float)((q + 1) * 16) + 16;
-                float blockCenter_height_0 = negHalfHeight + (float)(q * 16) + 16;
-                
-//                setLightmap(entityRift, (blockCenter_width + blockCenter_width_0) / 2.0F, 
-//                		(blockCenter_height + blockCenter_height_0) / 2.0F);
-                
-                float f19 = (float)(textureU + width - i * 16) / textureWidth;
-                float f20 = (float)(textureU + width - (i + 1) * 16) / textureWidth;
-                
-                float f21 = (float)(textureV + height - q * 16) / textureHeight;
-                float f22 = (float)(textureV + height - (q + 1) * 16) / textureHeight;
-                
-                
-//                Tesselator tesselator = Tesselator.getInstance();
-//                BufferBuilder bufferbuilder = tesselator.getBuilder();
-                
-                double position = 0;
-                
-                
-//                con.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL);
-                consumer.vertex((double)blockCenter_width, (double)blockCenter_height_0, position).uv(f20, f21).color(255, 255, 255, 255).overlayCoords(OverlayTexture.NO_OVERLAY).endVertex();
-                consumer.vertex((double)blockCenter_width_0, (double)blockCenter_height_0, position).uv(f19, f21).color(255, 255, 255, 255).overlayCoords(OverlayTexture.NO_OVERLAY).endVertex();
-                consumer.vertex((double)blockCenter_width_0, (double)blockCenter_height, position).uv(f19, f22).color(255, 255, 255, 255).overlayCoords(OverlayTexture.NO_OVERLAY).endVertex();
-                consumer.vertex((double)blockCenter_width, (double)blockCenter_height, position).uv(f20, f22).color(255, 255, 255, 255).overlayCoords(OverlayTexture.NO_OVERLAY).endVertex();
-                
-//                bufferbuilder..pos((double)blockCenter_width, (double)blockCenter_height_0, position).tex((double)f20, (double)f21).normal(0.0F, 0.0F, -1.0F).endVertex();
-//                bufferbuilder.pos((double)blockCenter_width_0, (double)blockCenter_height_0, position).tex((double)f19, (double)f21).normal(0.0F, 0.0F, -1.0F).endVertex();
-//                bufferbuilder.pos((double)blockCenter_width_0, (double)blockCenter_height, position).tex((double)f19, (double)f22).normal(0.0F, 0.0F, -1.0F).endVertex();
-//                bufferbuilder.pos((double)blockCenter_width, (double)blockCenter_height, position).tex((double)f20, (double)f22).normal(0.0F, 0.0F, -1.0F).endVertex();
-                
-//                tesselator.end();
-            }
-        }
-    }
+	/**
+	 * Applies a vertex with full color and no overlay with all the given parameters.
+	 * 
+	 * @param consumer The {@link VertexConsumer} to add the vertex to.
+	 * @param matrix4f The 4D matrix for the 3D rotation of the vertex.
+	 * @param matrix3f The 3d matrix for the normal vector of the lighting.
+	 * @param packedLight The light level of the entity.
+	 * @param x The X coordinate of the vertex.
+	 * @param y The Y coordinate of the vertex.
+	 * @param textureU The U coordinate of the texture.
+	 * @param textureV The V coordinate of the texture.
+	 */
+	private static void vertex(VertexConsumer consumer, Matrix4f matrix4f, Matrix3f matrix3f, 
+			int packedLight, float x, float y, float textureU, float textureV)
+	{
+		consumer.vertex(matrix4f, x - 0.5F, y - 0.5F, 0.0F).color(255, 255, 255, 255)
+			.uv(textureU, textureV).overlayCoords(OverlayTexture.NO_OVERLAY)
+			.uv2(packedLight).normal(matrix3f, 0.0F, 1.0F, 0.0F).endVertex();
+	}
 }
