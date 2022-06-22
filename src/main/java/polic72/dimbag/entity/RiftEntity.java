@@ -6,6 +6,8 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -14,7 +16,7 @@ import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import polic72.dimbag.DimensionalBag;
-import polic72.dimbag.core.ModEntities;
+import polic72.dimbag.core.ModSounds;
 
 
 /**
@@ -37,6 +39,12 @@ public class RiftEntity extends Entity
 	
 	
 	/**
+	 * The volume of the sounds played by the rift.
+	 */
+	public static final float VOLUME = 5F;
+	
+	
+	/**
 	 * The counter for how long the rift has left to live. It's best not to tell Rifts they have this, it scares them.
 	 */
 	private static final EntityDataAccessor<Integer> TICK_COUNTER = SynchedEntityData.defineId(RiftEntity.class, 
@@ -48,16 +56,24 @@ public class RiftEntity extends Entity
 	public RiftEntity(EntityType<? extends RiftEntity> entityType, Level level)
 	{
 		super(entityType, level);
+		
+		entityData.set(TICK_COUNTER, START_TICK_COUNTER);
 	}
 	
 	
-	public RiftEntity(Level level, int tick, double x, double y, double z)
+	public RiftEntity(EntityType<? extends RiftEntity> entityType, Level level, int tick, double x, double y, double z)
 	{
-		this(ModEntities.RIFT.get(), level);
+		this(entityType, level);
 		
 		setPos(x, y, z);
 		
 		entityData.set(TICK_COUNTER, tick);
+	}
+	
+	
+	public RiftEntity(EntityType<? extends RiftEntity> entityType, Level level, double x, double y, double z)
+	{
+		this(entityType, level, START_TICK_COUNTER, x, y, z);
 	}
 	
 	
@@ -83,32 +99,44 @@ public class RiftEntity extends Entity
 	}
 	
 	
-	/**
-	 * Gets the width of the Rift in pixels.
-	 * 
-	 * @return The width of the Rift in pixels.
-	 */
-	public int getWidthPixels()
+	@Override
+	protected void defineSynchedData()
 	{
-		return 16;
-	}
-	
-	
-	/**
-	 * Gets the height of the Rift in pixels.
-	 * 
-	 * @return The height of the Rift in pixels.
-	 */
-	public int getHeightPixels()
-	{
-		return 32;
+		entityData.define(TICK_COUNTER, START_TICK_COUNTER);
 	}
 	
 	
 	@Override
-	protected void defineSynchedData()
+	public void onAddedToWorld()
 	{
-		entityData.define(TICK_COUNTER, 0);
+		super.onAddedToWorld();
+		
+		playSound(ModSounds.OPEN_RIFT.get(), VOLUME, 1F);
+	}
+	
+	
+	@Override
+	public void tick()
+	{
+		super.tick();
+		
+		
+		if (!level.isClientSide)
+		{
+			if (getTick() <= 0)
+			{
+				kill();
+				
+				playSound(SoundEvents.CHICKEN_EGG, START_TICK_COUNTER, 1F);
+			}
+			else
+			{
+				setTick(getTick() - 1);
+				
+				
+				//Teleport and move entities.
+			}
+		}
 	}
 	
 	

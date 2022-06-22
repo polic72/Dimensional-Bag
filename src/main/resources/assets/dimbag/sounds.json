@@ -1,0 +1,11 @@
+{
+  "open_rift": {
+    "subtitle": "dimbag.subtitle.open_rift",
+    "sounds": [
+        {
+            "name": "dimbag:rift_opening", 
+            "attenuation_distance": 32
+        }
+    ]
+  }
+}
