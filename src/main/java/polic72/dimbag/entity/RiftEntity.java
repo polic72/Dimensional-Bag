@@ -11,10 +11,14 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.items.CapabilityItemHandler;
 import polic72.dimbag.DimensionalBag;
 import polic72.dimbag.core.ModSounds;
 
@@ -27,28 +31,54 @@ import polic72.dimbag.core.ModSounds;
 public class RiftEntity extends Entity
 {
 	/**
-	 * The name of the tag storing the tick counter for this Rift's NBT data.
-	 */
-	public static final String TICK_TAG = "tick";
-	
-	
-	/**
 	 * The value that the tick counter starts at.
 	 */
 	public static final int START_TICK_COUNTER = 100;
 	
 	
 	/**
+	 * The block radius of the sphere of influence of any given rift.
+	 */
+	public static final double RADIUS = 10;
+	
+	
+	/**
+	 * The name of the tag storing the tick counter for this Rift's NBT data.
+	 */
+	protected static final String TICK_TAG = "tick";
+	
+	
+	/**
 	 * The volume of the sounds played by the rift.
 	 */
-	public static final float VOLUME = 5F;
+	protected static final float VOLUME = 5F;
+	
+	
+	/**
+	 * The constant at which entities get pulled in to the rift.
+	 */
+	protected static final double VELOCITY_CONSTANT = 1;
 	
 	
 	/**
 	 * The counter for how long the rift has left to live. It's best not to tell Rifts they have this, it scares them.
 	 */
-	private static final EntityDataAccessor<Integer> TICK_COUNTER = SynchedEntityData.defineId(RiftEntity.class, 
+	protected static final EntityDataAccessor<Integer> TICK_COUNTER = SynchedEntityData.defineId(RiftEntity.class, 
 			EntityDataSerializers.INT);
+	
+	
+	
+	
+	/**
+	 * The cube to check for entities to move in.
+	 */
+	private AABB cubeOfInfluence;
+	
+	
+	/**
+	 * The point to pull entities in to.
+	 */
+	protected Vec3 pullCenter;
 	
 	
 	
@@ -56,25 +86,23 @@ public class RiftEntity extends Entity
 	public RiftEntity(EntityType<? extends RiftEntity> entityType, Level level)
 	{
 		super(entityType, level);
-		
-		entityData.set(TICK_COUNTER, START_TICK_COUNTER);
 	}
 	
 	
-	public RiftEntity(EntityType<? extends RiftEntity> entityType, Level level, int tick, double x, double y, double z)
-	{
-		this(entityType, level);
-		
-		setPos(x, y, z);
-		
-		entityData.set(TICK_COUNTER, tick);
-	}
-	
-	
-	public RiftEntity(EntityType<? extends RiftEntity> entityType, Level level, double x, double y, double z)
-	{
-		this(entityType, level, START_TICK_COUNTER, x, y, z);
-	}
+//	public RiftEntity(EntityType<? extends RiftEntity> entityType, Level level, int tick, double x, double y, double z)
+//	{
+//		this(entityType, level);
+//		
+//		setPos(x, y, z);
+//		
+//		entityData.set(TICK_COUNTER, tick);
+//	}
+//	
+//	
+//	public RiftEntity(EntityType<? extends RiftEntity> entityType, Level level, double x, double y, double z)
+//	{
+//		this(entityType, level, START_TICK_COUNTER, x, y, z);
+//	}
 	
 	
 	/**
@@ -102,7 +130,7 @@ public class RiftEntity extends Entity
 	@Override
 	protected void defineSynchedData()
 	{
-		entityData.define(TICK_COUNTER, START_TICK_COUNTER);
+		entityData.define(TICK_COUNTER, 0);
 	}
 	
 	
@@ -111,7 +139,17 @@ public class RiftEntity extends Entity
 	{
 		super.onAddedToWorld();
 		
+		
 		playSound(ModSounds.OPEN_RIFT.get(), VOLUME, 1F);
+		
+		setTick(START_TICK_COUNTER);
+		
+		
+		cubeOfInfluence = new AABB(getX() - RADIUS, getY() - RADIUS, getZ() - RADIUS, 
+				getX() + RADIUS, getY() + RADIUS, getZ() + RADIUS);
+		
+		
+		pullCenter = getBoundingBox().getCenter();
 	}
 	
 	
@@ -134,9 +172,124 @@ public class RiftEntity extends Entity
 				setTick(getTick() - 1);
 				
 				
-				//Teleport and move entities.
+				for (Entity entity : level.getEntities(this, getBoundingBox()))
+				{
+					if (wouldInteract(entity))
+					{
+						//Teleport entities.
+					}
+				}
+				
+				
+				//
 			}
 		}
+	}
+	
+	
+	/**
+	 * Tells whether or not the given entity will interact with rifts.
+	 * <p/>
+	 * By default Creative players, Spectator players, and flying players are immune.
+	 * 
+	 * @param entity The entity to check.
+	 * @return True when rifts can interact with the given entity. False otherwise.
+	 */
+	private static boolean wouldInteract(Entity entity)
+	{
+		if (entity.level.isClientSide)
+		{
+			return false;
+		}
+		
+		
+		if (entity instanceof RiftEntity)
+		{
+			return false;
+		}
+		
+		
+		if (entity instanceof Player player)
+		{
+			return !player.getAbilities().flying && !player.isCreative() && !player.isSpectator();
+		}
+		
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Checks the given entity for exceptions and applies velocity towards the rift if permitted.
+	 * <p/>
+	 * Uses the {@link RiftEntity#wouldInteract(Entity)} method to check.
+	 * 
+	 * @param entity The entity to check/apply velocity to.
+	 */
+	private void checkApplyVelocity(Entity entity)
+	{
+		if (!level.isClientSide)
+		{
+			if (wouldInteract(entity))
+			{
+				pullEntity(entity);
+			}
+		}
+	}
+	
+	
+	/**
+	 * Pulls the given entity towards this rift.
+	 * 
+	 * @param entity The entity to pull towards the rift.
+	 */
+	protected void pullEntity(Entity entity)
+	{
+		if (!level.isClientSide)
+		{
+			Vec3 entityCenter = entity.getBoundingBox().getCenter();
+			
+			double distance = distance(entityCenter);
+			
+			if (distance < 1)
+			{
+				entity.push(0, 1, 0);
+			}
+			else
+			{
+				distance *= distance;
+				
+				double x = -(VELOCITY_CONSTANT * (pullCenter.x - entityCenter.x)) / distance;
+				
+				double y = -(VELOCITY_CONSTANT * (pullCenter.y - entityCenter.y)) / distance;
+				
+				double z = -(VELOCITY_CONSTANT * (pullCenter.z - entityCenter.z)) / distance;
+				
+				
+				entity.push(x, y, z);
+			}
+		}
+	}
+	
+	
+	/**
+	 * Gets the distance of the given entity's center from this rift's pull center.
+	 * 
+	 * @param entityCenter The center of the entity's bounding box.
+	 * @return The distance of the given entity's center to this rift's pull center.
+	 */
+	private double distance(Vec3 entityCenter)
+	{
+		return Math.sqrt(Math.pow(pullCenter.x - entityCenter.x, 2) + Math.pow(pullCenter.y - entityCenter.y, 2)
+			+ Math.pow(pullCenter.z - entityCenter.z, 2));
+	}
+	
+	
+	protected boolean inSphereOfInfluence(Vec3 entityCenter)
+	{
+		//TODO Check if in a sphere centered at the pullCenter.
+		
+		return false;
 	}
 	
 	
@@ -157,7 +310,7 @@ public class RiftEntity extends Entity
 	@Override
 	public Packet<?> getAddEntityPacket()
 	{
-		return new ClientboundAddEntityPacket(this, 5);
+		return new ClientboundAddEntityPacket(this, getTick());
 	}
 	
 	
@@ -166,8 +319,6 @@ public class RiftEntity extends Entity
 	{
 		super.recreateFromPacket(packet);
 		
-		int test = packet.getData();
-		
-		DimensionalBag.LOGGER.info(String.valueOf(test));
+		setTick(packet.getData());
 	}
 }
