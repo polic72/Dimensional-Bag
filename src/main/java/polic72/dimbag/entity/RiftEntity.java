@@ -1,5 +1,7 @@
 package polic72.dimbag.entity;
 
+import java.util.List;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -181,7 +183,13 @@ public class RiftEntity extends Entity
 				}
 				
 				
-				//
+				//Pull entities:
+				List<Entity> entities = level.getEntities(this, cubeOfInfluence, (ent) -> wouldInteract(ent));
+				
+				for (Entity entity : entities)
+				{
+					//if entity in sphere, pull.
+				}
 			}
 		}
 	}
@@ -285,11 +293,16 @@ public class RiftEntity extends Entity
 	}
 	
 	
-	protected boolean inSphereOfInfluence(Vec3 entityCenter)
+	/**
+	 * Tells whether or not the given <i>entityCenter</i> is in this rift's sphere of influence or not.
+	 * 
+	 * @param entityCenter The center of the entity to test.
+	 * @return True if the given <i>entityCenter</i> is in this rift's sphere of influence. False otherwise.
+	 */
+	protected boolean isInSphereOfInfluence(Vec3 entityCenter)
 	{
-		//TODO Check if in a sphere centered at the pullCenter.
-		
-		return false;
+		return (Math.pow(pullCenter.x - entityCenter.x, 2) + Math.pow(pullCenter.y - entityCenter.y, 2) 
+			+ Math.pow(pullCenter.z - entityCenter.z, 2)) < Math.pow(RADIUS, 2);
 	}
 	
 	
