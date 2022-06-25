@@ -11,6 +11,7 @@ import polic72.dimbag.core.ModContainers;
 import polic72.dimbag.core.ModEntities;
 import polic72.dimbag.core.ModItems;
 import polic72.dimbag.core.ModSounds;
+import polic72.dimbag.network.PacketHandler;
 
 
 /**
@@ -41,6 +42,8 @@ public class DimensionalBag
 		ModContainers.REGISTER.register(eventBus);
 		ModEntities.REGISTER.register(eventBus);
 		ModSounds.REGISTER.register(eventBus);
+		
+		PacketHandler.init();
 		
 //		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(DimensionalBag::clientInit));
 	}

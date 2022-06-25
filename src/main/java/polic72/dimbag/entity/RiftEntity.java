@@ -188,7 +188,12 @@ public class RiftEntity extends Entity
 				
 				for (Entity entity : entities)
 				{
-					//if entity in sphere, pull.
+					if (isInSphereOfInfluence(entity.getBoundingBox().getCenter()))
+					{
+						//pullEntity(entity);
+						
+						checkApplyVelocity(entity);
+					}
 				}
 			}
 		}
@@ -261,20 +266,20 @@ public class RiftEntity extends Entity
 			
 			if (distance < 1)
 			{
-				entity.push(0, 1, 0);
+				entity.push(0, 1, 0);	//Send packet to players too.
 			}
 			else
 			{
 				distance *= distance;
 				
-				double x = -(VELOCITY_CONSTANT * (pullCenter.x - entityCenter.x)) / distance;
+				double x = (VELOCITY_CONSTANT * (pullCenter.x - entityCenter.x)) / distance;
 				
-				double y = -(VELOCITY_CONSTANT * (pullCenter.y - entityCenter.y)) / distance;
+				double y = (VELOCITY_CONSTANT * (pullCenter.y - entityCenter.y)) / distance;
 				
-				double z = -(VELOCITY_CONSTANT * (pullCenter.z - entityCenter.z)) / distance;
+				double z = (VELOCITY_CONSTANT * (pullCenter.z - entityCenter.z)) / distance;
 				
 				
-				entity.push(x, y, z);
+				entity.push(x, y, z);	//Send packet to players too.
 			}
 		}
 	}
