@@ -3,6 +3,8 @@ package polic72.dimbag.network;
 import java.util.function.Supplier;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
 /**
@@ -12,6 +14,59 @@ import net.minecraftforge.network.NetworkEvent;
  */
 public class VelocityMessage
 {
+	private double x;
+	private double y;
+	private double z;
+	
+	
+	/**
+	 * Constructs a {@link VelocityMessage} with the given <i>x</i>, <i>y</i>, <i>z</i> velocity components.
+	 * 
+	 * @param x The x component of the velocity being sent.
+	 * @param y The y component of the velocity to send.
+	 * @param z The z component of the velocity to send.
+	 */
+	public VelocityMessage(double x, double y, double z)
+	{
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+	
+	
+	/**
+	 * Gets the x component of the velocity.
+	 * 
+	 * @return The x component of the velocity.
+	 */
+	public double getX()
+	{
+		return x;
+	}
+	
+	
+	/**
+	 * Gets the y component of the velocity.
+	 * 
+	 * @return The y component of the velocity.
+	 */
+	public double getY()
+	{
+		return y;
+	}
+	
+	
+	/**
+	 * Gets the z component of the velocity.
+	 * 
+	 * @return The z component of the velocity.
+	 */
+	public double getZ()
+	{
+		return z;
+	}
+	
+	
 	/**
 	 * Encodes the velocity of the message in to the given <i>buffer</i>.
 	 * 
@@ -19,7 +74,9 @@ public class VelocityMessage
 	 */
 	public void encode(FriendlyByteBuf buffer)
 	{
-		//
+		buffer.writeDouble(x);
+		buffer.writeDouble(y);
+		buffer.writeDouble(z);
 	}
 	
 	
@@ -31,7 +88,7 @@ public class VelocityMessage
 	 */
 	public static VelocityMessage decode(FriendlyByteBuf buffer)
 	{
-		return null;
+		return new VelocityMessage(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
 	}
 	
 	
@@ -42,6 +99,11 @@ public class VelocityMessage
 	 */
 	public void handle(Supplier<NetworkEvent.Context> context)
 	{
-		//
+		context.get().enqueueWork(() ->
+			DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.handleVelocityPacket(this, context))
+		);
+		
+		
+		context.get().setPacketHandled(true);
 	}
 }

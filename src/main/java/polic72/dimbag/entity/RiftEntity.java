@@ -8,21 +8,18 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Arrow;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.items.CapabilityItemHandler;
-import polic72.dimbag.DimensionalBag;
+import net.minecraftforge.network.PacketDistributor;
 import polic72.dimbag.core.ModSounds;
+import polic72.dimbag.network.PacketHandler;
+import polic72.dimbag.network.VelocityMessage;
 
 
 /**
@@ -89,22 +86,6 @@ public class RiftEntity extends Entity
 	{
 		super(entityType, level);
 	}
-	
-	
-//	public RiftEntity(EntityType<? extends RiftEntity> entityType, Level level, int tick, double x, double y, double z)
-//	{
-//		this(entityType, level);
-//		
-//		setPos(x, y, z);
-//		
-//		entityData.set(TICK_COUNTER, tick);
-//	}
-//	
-//	
-//	public RiftEntity(EntityType<? extends RiftEntity> entityType, Level level, double x, double y, double z)
-//	{
-//		this(entityType, level, START_TICK_COUNTER, x, y, z);
-//	}
 	
 	
 	/**
@@ -190,8 +171,6 @@ public class RiftEntity extends Entity
 				{
 					if (isInSphereOfInfluence(entity.getBoundingBox().getCenter()))
 					{
-						//pullEntity(entity);
-						
 						checkApplyVelocity(entity);
 					}
 				}
@@ -266,7 +245,7 @@ public class RiftEntity extends Entity
 			
 			if (distance < 1)
 			{
-				entity.push(0, 1, 0);	//Send packet to players too.
+				pushHelper(entity, 0, 1, 0);
 			}
 			else
 			{
@@ -279,7 +258,31 @@ public class RiftEntity extends Entity
 				double z = (VELOCITY_CONSTANT * (pullCenter.z - entityCenter.z)) / distance;
 				
 				
-				entity.push(x, y, z);	//Send packet to players too.
+				pushHelper(entity, x, y, z);
+			}
+		}
+	}
+	
+	
+	/**
+	 * Pushes an entity or sends a {@link VelocityMessage} packet to a player.
+	 * 
+	 * @param entity The entity to push.
+	 * @param x The x component of the velocity to push the <i>entity</i> by.
+	 * @param y The y component of the velocity to push the <i>entity</i> by.
+	 * @param z The z component of the velocity to push the <i>entity</i> by.
+	 */
+	private static void pushHelper(Entity entity, double x, double y, double z)
+	{
+		if (!entity.level.isClientSide)
+		{
+			if (entity instanceof ServerPlayer player)	//Players will always be ServerPlayers on the server-side.
+			{
+				PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new VelocityMessage(x, y, z));
+			}
+			else
+			{
+				entity.push(x, y, z);
 			}
 		}
 	}
