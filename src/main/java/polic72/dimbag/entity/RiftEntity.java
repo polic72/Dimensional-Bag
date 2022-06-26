@@ -14,12 +14,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 import polic72.dimbag.core.ModSounds;
 import polic72.dimbag.network.PacketHandler;
 import polic72.dimbag.network.VelocityMessage;
+import polic72.dimbag.util.TeleportHelper;
 
 
 /**
@@ -149,6 +151,8 @@ public class RiftEntity extends Entity
 				kill();
 				
 				playSound(SoundEvents.CHICKEN_EGG, START_TICK_COUNTER, 1F);
+				
+				TeleportHelper.pickDimPos(getServer());
 			}
 			else
 			{
@@ -160,6 +164,8 @@ public class RiftEntity extends Entity
 					if (wouldInteract(entity))
 					{
 						//Teleport entities.
+						//entity
+//						level.getHeight(Types.WORLD_SURFACE_WG, START_TICK_COUNTER, START_TICK_COUNTER)
 					}
 				}
 				
