@@ -4,17 +4,24 @@ import java.util.Random;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.datafix.fixes.BlockStateData;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.decoration.Painting;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.portal.PortalForcer;
+import net.minecraft.world.phys.shapes.CubeVoxelShape;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.registries.DeferredRegister;
 import polic72.dimbag.DimensionalBag;
@@ -80,12 +87,11 @@ public class TeleportHelper
 		}
 		
 		
-//		level.getBlockState(pos.below()).has.canOcclude();
+		if (Block.isFaceFull(level.getBlockState(pos.below()).getCollisionShape(level, pos.below()), Direction.UP))
+		{
+			return level.getBlockState(pos).isAir() && level.getBlockState(pos.above()).isAir();
+		}
 		
-//		if (level.getBlockState(pos.below()).isValidSpawn(level, pos, null).hasLargeCollisionShape())
-//		{
-//			
-//		}
 		
 		return false;
 	}

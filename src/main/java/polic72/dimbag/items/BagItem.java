@@ -9,6 +9,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.MobSpawnType;
@@ -17,12 +18,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.network.NetworkHooks;
+import polic72.dimbag.DimensionalBag;
 import polic72.dimbag.container.BagContainer;
 import polic72.dimbag.core.ModEntities;
 import polic72.dimbag.inventory.BagCapabilityProvider;
+import polic72.dimbag.util.TeleportHelper;
 
 
 /**
@@ -67,6 +71,20 @@ public class BagItem extends Item
 	
 	
 	@Override
+	public InteractionResult useOn(UseOnContext pContext)
+	{
+//		if (!pContext.getLevel().isClientSide)
+//		{
+//			DimensionalBag.LOGGER.info(String.valueOf(
+//				TeleportHelper.isSafeLocation(pContext.getLevel(), pContext.getClickedPos())
+//				));
+//		}
+		
+		return super.useOn(pContext);
+	}
+	
+	
+	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand)
 	{
 		if (!level.isClientSide)
@@ -88,8 +106,14 @@ public class BagItem extends Item
 				workingItemStack.setTag(nbt);
 			}
 			
-			ModEntities.RIFT.get().spawn((ServerLevel)level, null, null, player.getOnPos(), 
-					MobSpawnType.EVENT, false, false);
+			
+//			ModEntities.RIFT.get().spawn((ServerLevel)level, null, null, player.getOnPos(), 
+//					MobSpawnType.EVENT, false, false);
+			
+			
+			DimensionalBag.LOGGER.info(String.valueOf(
+				TeleportHelper.isSafeLocation(level, player.blockPosition())
+				));
 			
 			
 			MenuProvider containerProvider = new MenuProvider()
