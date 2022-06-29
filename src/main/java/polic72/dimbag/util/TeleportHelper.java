@@ -1,5 +1,6 @@
 package polic72.dimbag.util;
 
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
@@ -47,6 +48,12 @@ public class TeleportHelper
 	private static final int MAX_COORDINATE = 10000;
 	
 	
+	/**
+	 * Set of blocks that are deemed dangerous to teleport to, even if a full block.
+	 */
+	private static final HashSet<ResourceLocation> DANGER_BLOCKS = new HashSet<>();
+	
+	
 	public static void pickDimPos(MinecraftServer server)
 	{
 		@SuppressWarnings("unchecked")
@@ -71,8 +78,9 @@ public class TeleportHelper
 	 * Checks if the given <i>pos</i> in the given <i>level</i> is a safe location to teleport to.
 	 * <p/>
 	 * "Safe" means that there is air at, a full-block directly underneath, and air directly above the given <i>pos</i>. 
-	 * This is safe enough for players and most other mobs to not immediately die, but it doesn't necessarily guarantee a fun 
-	 * time immediately after...
+	 * Any blocks inside the internal "danger blocks" determined in the config are avoided during teleportation.This is 
+	 * safe enough for players and most other mobs to not immediately die, but it doesn't necessarily guarantee a fun time 
+	 * immediately after...
 	 * 
 	 * @param level The level to check.
 	 * @param pos The block position to check.
@@ -87,6 +95,12 @@ public class TeleportHelper
 		}
 		
 		
+		if (DANGER_BLOCKS.contains(level.getBlockState(pos.below()).getBlock().getRegistryName()))
+		{
+			return false;
+		}
+		
+		
 		if (Block.isFaceFull(level.getBlockState(pos.below()).getCollisionShape(level, pos.below()), Direction.UP))
 		{
 			return level.getBlockState(pos).isAir() && level.getBlockState(pos.above()).isAir();
@@ -94,5 +108,37 @@ public class TeleportHelper
 		
 		
 		return false;
+	}
+	
+	
+	/**
+	 * Gets a safe {@link BlockPos} from the given <i>level</i> and <i>pos</i>.
+	 * <p/>
+	 * Starts at the given <i>pos</i>, looks up on the y coordinate until world height is met, loops to the bottom, then 
+	 * back up to <i>pos</i>. If any safe
+	 * 
+	 * @param level The level to check for a safe location from.
+	 * @param pos The initial position to look for a safe location from.
+	 * @return The {@link BlockPos} that is safe from the given <i>pos</i>. Null if no safe location could be found.
+	 * 
+	 * @see TeleportHelper#isSafeLocation(Level, BlockPos)
+	 */
+	public static BlockPos scanSafeLocation(Level level, BlockPos pos)
+	{
+		//Loop up blockPos' and try to find a safe location. Return null if you get back to the given pos.
+		
+		return null;
+	}
+	
+	
+	/**
+	 * Tries to add the given registry name of a block to the internal danger blocks.
+	 * 
+	 * @param blockRegistryName The registry name of a block.
+	 * @return True if the block was successfully added to the danger blocks. False otherwise.
+	 */
+	public static boolean addDangerBlock(ResourceLocation blockRegistryName)
+	{
+		return DANGER_BLOCKS.add(blockRegistryName);
 	}
 }
