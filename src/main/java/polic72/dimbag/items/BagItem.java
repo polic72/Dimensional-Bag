@@ -111,9 +111,12 @@ public class BagItem extends Item
 //					MobSpawnType.EVENT, false, false);
 			
 			
-			DimensionalBag.LOGGER.info(String.valueOf(
-				TeleportHelper.isSafeLocation(level, player.blockPosition())
-				));
+//			DimensionalBag.LOGGER.info(String.valueOf(
+//				TeleportHelper.isSafeLocation(level, player.blockPosition())
+//				));
+			
+			
+			TeleportHelper.pickDimPos_Slow(level.getServer());
 			
 			
 			MenuProvider containerProvider = new MenuProvider()

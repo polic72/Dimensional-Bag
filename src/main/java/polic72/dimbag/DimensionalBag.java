@@ -45,6 +45,8 @@ public class DimensionalBag
 		
 		PacketHandler.init();
 		
+		//TODO Add the danger blocks to the TeleportHelper.
+		
 //		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(DimensionalBag::clientInit));
 	}
 }
