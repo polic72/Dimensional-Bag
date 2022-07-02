@@ -1,11 +1,14 @@
 package polic72.dimbag.items;
 
+import java.util.Random;
 import java.util.UUID;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -26,7 +29,9 @@ import polic72.dimbag.DimensionalBag;
 import polic72.dimbag.container.BagContainer;
 import polic72.dimbag.core.ModEntities;
 import polic72.dimbag.inventory.BagCapabilityProvider;
+import polic72.dimbag.util.Pair;
 import polic72.dimbag.util.TeleportHelper;
+import polic72.dimbag.util.Teleporter;
 
 
 /**
@@ -116,7 +121,7 @@ public class BagItem extends Item
 //				));
 			
 			
-			TeleportHelper.pickDimPos_Slow(level.getServer());
+			//TeleportHelper.pickDimPos_Slow(level.getServer());
 			
 			
 			MenuProvider containerProvider = new MenuProvider()
@@ -135,8 +140,21 @@ public class BagItem extends Item
 				}
 			};
 			
-			NetworkHooks.openGui((ServerPlayer)player, containerProvider, 
-					(FriendlyByteBuf t) -> t.writeItem(workingItemStack));
+			
+//			NetworkHooks.openGui((ServerPlayer)player, containerProvider, 
+//				(FriendlyByteBuf t) -> t.writeItem(workingItemStack));
+			
+			
+//			@SuppressWarnings("unchecked")
+//			ResourceKey<Level>[] levelKeys = player.getServer().levelKeys().toArray(new ResourceKey[0]);
+			
+//			player.changeDimension(player.getServer().getLevel(levelKeys[new Random().nextInt(levelKeys.length)]), 
+//				new Teleporter());
+			
+			
+			Pair<Level, BlockPos> spot = TeleportHelper.pickDimPos_Slow(level.getServer());
+			
+			player.changeDimension((ServerLevel)spot.getFirst(), new Teleporter(spot.getSecond()));
 		}
 		
 		

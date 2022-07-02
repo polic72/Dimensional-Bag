@@ -2,15 +2,21 @@ package polic72.dimbag.container;
 
 import java.util.UUID;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import polic72.dimbag.DimensionalBag;
 import polic72.dimbag.core.ModContainers;
+import polic72.dimbag.core.ModEntities;
 import polic72.dimbag.items.BagItem;
 
 
@@ -24,6 +30,9 @@ public class BagContainer extends AbstractContainerMenu
 	private IItemHandler playerInventory;
 	
 	
+	private int riftIndex;
+	
+	
 	public BagContainer(int windowID, Inventory inventory, ItemStack itemStack)
 	{
 		super(ModContainers.BAG_CONTAINER.get(), windowID);
@@ -35,9 +44,16 @@ public class BagContainer extends AbstractContainerMenu
 //		player = inventory.player;
 		playerInventory = new InvWrapper(inventory);
 		
+		
+		riftIndex = -1;
+		
+		
 		addSlotGrid(itemInventory, 0, 8, 18, 9, 18, 3, 18);
 		
 		layoutPlayerInventorySlots(8, 84);
+		
+		
+		addSlotListener(new BagConatinerListener());
 	}
 	
 	
@@ -75,75 +91,34 @@ public class BagContainer extends AbstractContainerMenu
 		}
 		
 		return workingStack;
-		
-		
-//		ChestMenu
-//		
-////		super.quickMoveStack(player, index);
-//		
-////		Slot slot = slots.get(index);
-////		
-////		return super.quickMoveStack(player, index);
-//		ItemStack workingStack = ItemStack.EMPTY;
-//		Slot slot = this.slots.get(index);
-//		
-//		if (slot != null && slot.hasItem())
-//		{
-//			ItemStack selectedStack = slot.getItem();
-//			workingStack = selectedStack.copy();
-//			
-//			if (index == 0)
-//			{
-//				if (!this.moveItemStackTo(selectedStack, 1, 37, true))
-//				{
-//					return ItemStack.EMPTY;
-//				}
-////				slot.onQuickCraft(selectedStack, workingStack);
-//			}
-//			else
-//			{
-//				if (!this.moveItemStackTo(selectedStack, 0, 1, false))
-//				{
-//					return ItemStack.EMPTY;
-//				}
-//				else if (index < 28)
-//				{
-//					if (!this.moveItemStackTo(selectedStack, 28, 37, false))
-//					{
-//						return ItemStack.EMPTY;
-//					}
-//				}
-//				else if (index < 37 && !this.moveItemStackTo(selectedStack, 1, 28, false))
-//				{
-//					return ItemStack.EMPTY;
-//				}
-//			}
-//			
-//			if (selectedStack.isEmpty())
-//			{
-//				slot.set(ItemStack.EMPTY);
-//			}
-//			else
-//			{
-//				slot.setChanged();
-//			}
-//			
-//			if (selectedStack.getCount() == workingStack.getCount())
-//			{
-//				return ItemStack.EMPTY;
-//			}
-//			
-//			slot.onTake(playerIn, selectedStack);
-//		}
-//		
-//		return workingStack;
 	}
 	
 	
 	@Override
 	public boolean stillValid(Player player)
 	{
-		return true;
+		if (riftIndex == -1)
+		{
+			return true;
+		}
+		
+		
+		ModEntities.RIFT.get().spawn((ServerLevel)player.level, null, null, player.getOnPos().above(), 
+			MobSpawnType.EVENT, false, false);
+		
+		
+		return false;
+	}
+	
+	
+	/**
+	 * Spawns a rift at the player's location using the <i>offendingSlotIndex</i> as the index of the Bag inside this bag.
+	 * 
+	 * @param offendingSlotIndex The index of the slot that has the Bag creating a rift with.
+	 */
+	public void rift(int offendingSlotIndex)
+	{
+		riftIndex = offendingSlotIndex;
 	}
 	
 	

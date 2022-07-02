@@ -108,7 +108,36 @@ public class TeleportHelper
 	 */
 	public static Pair<Level, BlockPos> pickDimPos_Fast(MinecraftServer server)
 	{
-		//Do the same as the slow technique, but only look in already generated chunks.
+		//I do not know how to check if a chunk is generated or not, yet.
+		
+//		@SuppressWarnings("unchecked")
+//		ResourceKey<Level>[] levelKeys = server.levelKeys().toArray(new ResourceKey[0]);
+//		
+//		
+//		Random random = new Random();
+//		
+//		for (int i = 0; i < PRECAUTION; ++i)
+//		{
+//			ResourceKey<Level> chosenKey = levelKeys[random.nextInt(levelKeys.length)];
+//			
+//			ServerLevel level = server.getLevel(chosenKey);
+//			
+//			level.load
+//			
+//			int x = (int)(random.nextGaussian() * COORDINATE_MULTIPLIER);
+//			int z = (int)(random.nextGaussian() * COORDINATE_MULTIPLIER);
+//			
+//			int y = random.nextInt(level.getMinBuildHeight(), level.getMaxBuildHeight());
+//			
+//			
+//			BlockPos sendingLocation = scanSafeLocation(level, new BlockPos(x, y, z));
+//			
+//			if (sendingLocation != null)
+//			{
+//				return new Pair<Level, BlockPos>(level, sendingLocation);
+//			}
+//		}
+		
 		
 		return null;
 	}

@@ -151,8 +151,6 @@ public class RiftEntity extends Entity
 				kill();
 				
 				playSound(SoundEvents.CHICKEN_EGG, START_TICK_COUNTER, 1F);
-				
-				TeleportHelper.pickDimPos(getServer());
 			}
 			else
 			{
