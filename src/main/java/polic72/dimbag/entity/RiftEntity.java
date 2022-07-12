@@ -2,12 +2,14 @@ package polic72.dimbag.entity;
 
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -21,7 +23,9 @@ import net.minecraftforge.network.PacketDistributor;
 import polic72.dimbag.core.ModSounds;
 import polic72.dimbag.network.PacketHandler;
 import polic72.dimbag.network.VelocityMessage;
+import polic72.dimbag.util.Pair;
 import polic72.dimbag.util.TeleportHelper;
+import polic72.dimbag.util.Teleporter;
 
 
 /**
@@ -82,6 +86,12 @@ public class RiftEntity extends Entity
 	protected Vec3 pullCenter;
 	
 	
+	/**
+	 * The spot to teleport all entities to.
+	 */
+	protected Pair<Level, BlockPos> spot;
+	
+	
 	
 	
 	public RiftEntity(EntityType<? extends RiftEntity> entityType, Level level)
@@ -135,6 +145,8 @@ public class RiftEntity extends Entity
 		
 		
 		pullCenter = getBoundingBox().getCenter();
+		
+		spot = TeleportHelper.pickDimPos_Slow(level.getServer());
 	}
 	
 	
@@ -162,8 +174,7 @@ public class RiftEntity extends Entity
 					if (wouldInteract(entity))
 					{
 						//Teleport entities.
-						//entity
-//						level.getHeight(Types.WORLD_SURFACE_WG, START_TICK_COUNTER, START_TICK_COUNTER)
+						entity.changeDimension((ServerLevel)spot.getFirst(), new Teleporter(spot.getSecond()));
 					}
 				}
 				

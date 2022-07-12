@@ -2,8 +2,11 @@ package polic72.dimbag.container;
 
 import java.util.UUID;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -103,8 +106,7 @@ public class BagContainer extends AbstractContainerMenu
 		}
 		
 		
-		ModEntities.RIFT.get().spawn((ServerLevel)player.level, null, null, player.getOnPos().above(), 
-			MobSpawnType.EVENT, false, false);
+		selfDestruct((ServerLevel)player.level, player.getOnPos().above());
 		
 		
 		return false;
@@ -119,6 +121,46 @@ public class BagContainer extends AbstractContainerMenu
 	public void rift(int offendingSlotIndex)
 	{
 		riftIndex = offendingSlotIndex;
+	}
+	
+	
+	/**
+	 * Summons a rift in the given <i>level</i> at the given <i>pos</i>. Destroys the held bag (as well as the one at this 
+	 * {@link BagContainer#riftIndex}, dropping all of their items as well.
+	 * 
+	 * @param level The level to create the rift and drop items in.
+	 * @param pos The position to create the rift and drop items at.
+	 */
+	private void selfDestruct(ServerLevel level, BlockPos pos)
+	{
+		IItemHandler innerItems = slots.get(riftIndex).getItem().getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+			.resolve().get();
+		
+		//Drop inner bag.
+		for (int i = 0; i < innerItems.getSlots(); ++i)
+		{
+			ItemStack checker = innerItems.getStackInSlot(i);
+			
+			if (!checker.isEmpty())
+			{
+				ItemStack stack = innerItems.extractItem(i, checker.getCount(), false);
+				
+				//Find a way to drop the item as an entity.
+			}
+		}
+		
+		
+		//Drop this bag.
+		for (int i = 0; i < 27; ++i)
+		{
+			if (i != riftIndex)
+			{
+				//Drop shit
+			}
+		}
+		
+		
+		ModEntities.RIFT.get().spawn(level, null, null, pos, MobSpawnType.EVENT, false, false);
 	}
 	
 	

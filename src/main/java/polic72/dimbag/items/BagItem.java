@@ -141,8 +141,8 @@ public class BagItem extends Item
 			};
 			
 			
-//			NetworkHooks.openGui((ServerPlayer)player, containerProvider, 
-//				(FriendlyByteBuf t) -> t.writeItem(workingItemStack));
+			NetworkHooks.openGui((ServerPlayer)player, containerProvider, 
+				(FriendlyByteBuf t) -> t.writeItem(workingItemStack));
 			
 			
 //			@SuppressWarnings("unchecked")
@@ -152,9 +152,9 @@ public class BagItem extends Item
 //				new Teleporter());
 			
 			
-			Pair<Level, BlockPos> spot = TeleportHelper.pickDimPos_Slow(level.getServer());
+			//Pair<Level, BlockPos> spot = TeleportHelper.pickDimPos_Slow(level.getServer());
 			
-			player.changeDimension((ServerLevel)spot.getFirst(), new Teleporter(spot.getSecond()));
+			//player.changeDimension((ServerLevel)spot.getFirst(), new Teleporter(spot.getSecond()));
 		}
 		
 		

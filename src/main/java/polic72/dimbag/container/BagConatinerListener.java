@@ -4,7 +4,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
-import polic72.dimbag.DimensionalBag;
 import polic72.dimbag.Reference;
 
 
@@ -26,7 +25,7 @@ public class BagConatinerListener implements ContainerListener
 				//TODO Consider making this based off of implementing an interface or something.
 				if (stack.getItem().getRegistryName().equals(new ResourceLocation(Reference.MOD_ID, "bag")))
 				{
-					DimensionalBag.LOGGER.info("oh boy...");
+					//DimensionalBag.LOGGER.info("oh boy...");
 					
 					bagContainer.rift(slotIndex);
 				}
