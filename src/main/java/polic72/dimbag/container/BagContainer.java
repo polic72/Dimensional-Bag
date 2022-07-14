@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -145,22 +146,56 @@ public class BagContainer extends AbstractContainerMenu
 			{
 				ItemStack stack = innerItems.extractItem(i, checker.getCount(), false);
 				
-				//Find a way to drop the item as an entity.
+				Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), stack);
 			}
 		}
+		
+		
+		Slot slotToRemove = slots.get(riftIndex); 
+		
+		slotToRemove.set(ItemStack.EMPTY);
+		slotToRemove.setChanged();
 		
 		
 		//Drop this bag.
 		for (int i = 0; i < 27; ++i)
 		{
-			if (i != riftIndex)
+//			if (i != riftIndex)
+//			{
+//				//Drop shit
+//			}
+			
+			ItemStack stack = slots.get(i).getItem();
+			
+			if (!stack.isEmpty())
 			{
-				//Drop shit
+				Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), stack);
 			}
 		}
 		
 		
-		ModEntities.RIFT.get().spawn(level, null, null, pos, MobSpawnType.EVENT, false, false);
+		for (int i = 54; i < 63; ++i)	//The opened bag can only be in the hotbar.
+		{
+			ItemStack stack = slots.get(i).getItem();
+			
+			if (stack.getItem() instanceof BagItem)
+			{
+				if (stack.getTag().getUUID(BagItem.ID_TAG).equals(bagID))
+				{
+					slotToRemove = slots.get(i); 
+					
+					slotToRemove.set(ItemStack.EMPTY);
+					slotToRemove.setChanged();
+					
+					break;
+				}
+			}
+		}
+		
+		//Look into chunk loading around the rift.
+		
+		
+		//ModEntities.RIFT.get().spawn(level, null, null, pos, MobSpawnType.EVENT, false, false);
 	}
 	
 	

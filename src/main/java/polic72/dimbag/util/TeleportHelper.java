@@ -81,7 +81,7 @@ public class TeleportHelper
 			
 			if (sendingLocation != null)
 			{
-				return new Pair<Level, BlockPos>(level, sendingLocation);
+				return new Pair<Level, BlockPos>(level, sendingLocation.immutable());
 			}
 		}
 		
