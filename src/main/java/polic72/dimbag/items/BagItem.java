@@ -22,10 +22,15 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.ticket.ChunkTicketManager;
+import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.NetworkHooks;
 import polic72.dimbag.DimensionalBag;
+import polic72.dimbag.Reference;
 import polic72.dimbag.container.BagContainer;
 import polic72.dimbag.core.ModEntities;
 import polic72.dimbag.inventory.BagCapabilityProvider;
@@ -141,8 +146,8 @@ public class BagItem extends Item
 			};
 			
 			
-			NetworkHooks.openGui((ServerPlayer)player, containerProvider, 
-				(FriendlyByteBuf t) -> t.writeItem(workingItemStack));
+//			NetworkHooks.openGui((ServerPlayer)player, containerProvider, 
+//				(FriendlyByteBuf t) -> t.writeItem(workingItemStack));
 			
 			
 //			@SuppressWarnings("unchecked")
@@ -155,6 +160,16 @@ public class BagItem extends Item
 			//Pair<Level, BlockPos> spot = TeleportHelper.pickDimPos_Slow(level.getServer());
 			
 			//player.changeDimension((ServerLevel)spot.getFirst(), new Teleporter(spot.getSecond()));
+			
+			
+			//Consider chunk loading the rift in the future.
+			
+			//level.getChunkAt(new BlockPos(180, 65, 25)).setLoaded(true);
+			
+//			ChunkPos chunkPos = level.getChunkAt(new BlockPos(180, 65, 25)).getPos();
+//			
+//			ForgeChunkManager.forceChunk((ServerLevel)level, Reference.MOD_ID, 
+//					player, chunkPos.x, chunkPos.z, true, true);
 		}
 		
 		
