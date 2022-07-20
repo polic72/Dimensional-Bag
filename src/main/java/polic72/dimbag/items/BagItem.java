@@ -166,10 +166,10 @@ public class BagItem extends Item
 			
 			//level.getChunkAt(new BlockPos(180, 65, 25)).setLoaded(true);
 			
-//			ChunkPos chunkPos = level.getChunkAt(new BlockPos(180, 65, 25)).getPos();
-//			
-//			ForgeChunkManager.forceChunk((ServerLevel)level, Reference.MOD_ID, 
-//					player, chunkPos.x, chunkPos.z, true, true);
+			ChunkPos chunkPos = level.getChunkAt(new BlockPos(180, 65, 25)).getPos();
+			
+			ForgeChunkManager.forceChunk((ServerLevel)level, Reference.MOD_ID, 
+					player, chunkPos.x, chunkPos.z, true, true);
 		}
 		
 		

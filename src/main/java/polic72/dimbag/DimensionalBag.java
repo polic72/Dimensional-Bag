@@ -1,9 +1,18 @@
 package polic72.dimbag;
 
+import java.util.Map;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 
+import it.unimi.dsi.fastutil.longs.LongSet;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraftforge.common.world.ForgeChunkManager;
+import net.minecraftforge.common.world.ForgeChunkManager.LoadingValidationCallback;
+import net.minecraftforge.common.world.ForgeChunkManager.TicketHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -48,5 +57,10 @@ public class DimensionalBag
 		//TODO Add the danger blocks to the TeleportHelper.
 		
 //		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(DimensionalBag::clientInit));
+		
+		ForgeChunkManager.setForcedChunkLoadingCallback(Reference.MOD_ID, (level, ticketHelper) -> {
+			@SuppressWarnings("unused")
+			Map<UUID, Pair<LongSet, LongSet>> scs = ticketHelper.getEntityTickets();
+		});
 	}
 }
