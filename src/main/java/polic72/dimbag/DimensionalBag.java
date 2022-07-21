@@ -1,6 +1,7 @@
 package polic72.dimbag;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 
 import it.unimi.dsi.fastutil.longs.LongSet;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.common.world.ForgeChunkManager.LoadingValidationCallback;
@@ -59,8 +61,19 @@ public class DimensionalBag
 //		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> eventBus.addListener(DimensionalBag::clientInit));
 		
 		ForgeChunkManager.setForcedChunkLoadingCallback(Reference.MOD_ID, (level, ticketHelper) -> {
-			@SuppressWarnings("unused")
 			Map<UUID, Pair<LongSet, LongSet>> scs = ticketHelper.getEntityTickets();
+			
+			for (UUID id : scs.keySet())
+			{
+				ticketHelper.removeAllTickets(id);
+			}
+			
+			Set<BlockPos> bruh = ticketHelper.getBlockTickets().keySet();
+			
+			for (BlockPos pos : bruh)
+			{
+				ticketHelper.removeAllTickets(pos);
+			}
 		});
 	}
 }

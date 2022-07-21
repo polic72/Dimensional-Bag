@@ -19,6 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.PacketDistributor;
 import polic72.dimbag.core.ModSounds;
 import polic72.dimbag.network.PacketHandler;
@@ -163,6 +164,9 @@ public class RiftEntity extends Entity
 				kill();
 				
 				playSound(SoundEvents.CHICKEN_EGG, START_TICK_COUNTER, 1F);
+				
+				
+//				ForgeChunkManager.f
 			}
 			else
 			{
@@ -326,6 +330,19 @@ public class RiftEntity extends Entity
 	{
 		return (Math.pow(pullCenter.x - entityCenter.x, 2) + Math.pow(pullCenter.y - entityCenter.y, 2) 
 			+ Math.pow(pullCenter.z - entityCenter.z, 2)) < Math.pow(RADIUS, 2);
+	}
+	
+	
+	/**
+	 * Loads/unloads chunks owned by this rift.
+	 * 
+	 * @param activate True to force load chunks. False to not do that.
+	 */
+	protected void loadChunks(boolean activate)
+	{
+		int chunkRadius = (int)(RADIUS / 16) + 1;
+		
+		//Load/unload these chunks and the ones in the radius.
 	}
 	
 	

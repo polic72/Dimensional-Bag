@@ -146,8 +146,8 @@ public class BagItem extends Item
 			};
 			
 			
-//			NetworkHooks.openGui((ServerPlayer)player, containerProvider, 
-//				(FriendlyByteBuf t) -> t.writeItem(workingItemStack));
+			NetworkHooks.openGui((ServerPlayer)player, containerProvider, 
+				(FriendlyByteBuf t) -> t.writeItem(workingItemStack));
 			
 			
 //			@SuppressWarnings("unchecked")
@@ -162,14 +162,16 @@ public class BagItem extends Item
 			//player.changeDimension((ServerLevel)spot.getFirst(), new Teleporter(spot.getSecond()));
 			
 			
-			//Consider chunk loading the rift in the future.
-			
-			//level.getChunkAt(new BlockPos(180, 65, 25)).setLoaded(true);
-			
-			ChunkPos chunkPos = level.getChunkAt(new BlockPos(180, 65, 25)).getPos();
-			
-			ForgeChunkManager.forceChunk((ServerLevel)level, Reference.MOD_ID, 
-					player, chunkPos.x, chunkPos.z, true, true);
+//			//Consider chunk loading the rift in the future.
+//			
+//			//level.getChunkAt(new BlockPos(180, 65, 25)).setLoaded(true);
+//			
+//			ChunkPos chunkPos = level.getChunkAt(new BlockPos(180, 65, 25)).getPos();
+//			
+////			if (ForgeChunkManager.)
+//			
+//			ForgeChunkManager.forceChunk((ServerLevel)level, Reference.MOD_ID, 
+//				player, chunkPos.x, chunkPos.z, true, true);
 		}
 		
 		
