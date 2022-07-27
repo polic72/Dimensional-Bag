@@ -192,12 +192,8 @@ public class BagContainer extends AbstractContainerMenu
 			}
 		}
 		
-		//Look into chunk loading around the rift.
 		
-		//level.getChunk(0, 0).setLoaded(true);
-		
-		
-		//ModEntities.RIFT.get().spawn(level, null, null, pos, MobSpawnType.EVENT, false, false);
+		ModEntities.RIFT.get().spawn(level, null, null, pos, MobSpawnType.EVENT, false, false);
 	}
 	
 	

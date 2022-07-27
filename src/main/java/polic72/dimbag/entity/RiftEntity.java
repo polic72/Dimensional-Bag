@@ -15,12 +15,13 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.PacketDistributor;
+import polic72.dimbag.Reference;
 import polic72.dimbag.core.ModSounds;
 import polic72.dimbag.network.PacketHandler;
 import polic72.dimbag.network.VelocityMessage;
@@ -148,6 +149,9 @@ public class RiftEntity extends Entity
 		pullCenter = getBoundingBox().getCenter();
 		
 		spot = TeleportHelper.pickDimPos_Slow(level.getServer());
+		
+		
+		loadChunks(true);
 	}
 	
 	
@@ -166,7 +170,7 @@ public class RiftEntity extends Entity
 				playSound(SoundEvents.CHICKEN_EGG, START_TICK_COUNTER, 1F);
 				
 				
-//				ForgeChunkManager.f
+				loadChunks(false);
 			}
 			else
 			{
@@ -335,14 +339,28 @@ public class RiftEntity extends Entity
 	
 	/**
 	 * Loads/unloads chunks owned by this rift.
+	 * <p/>
+	 * Will only do anything on the logical server side.
 	 * 
 	 * @param activate True to force load chunks. False to not do that.
 	 */
 	protected void loadChunks(boolean activate)
 	{
-		int chunkRadius = (int)(RADIUS / 16) + 1;
-		
-		//Load/unload these chunks and the ones in the radius.
+		if (!level.isClientSide)
+		{
+			int chunkRadius = (int)(RADIUS / 16) + 1;
+			
+			
+			ChunkPos pos = chunkPosition();
+			
+			for (int x = pos.x - chunkRadius; x < pos.x + chunkRadius; ++x)
+			{
+				for (int z = pos.z - chunkRadius; z < pos.z + chunkRadius; ++z)
+				{
+					ForgeChunkManager.forceChunk((ServerLevel)level, Reference.MOD_ID, this, x, z, activate, true);
+				}
+			}
+		}
 	}
 	
 	
